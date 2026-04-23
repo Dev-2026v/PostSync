@@ -44,8 +44,7 @@ router.post('/schedule', async (req, res) => {
     return res.status(400).json({ error: 'Scheduled time must be in the future' })
   }
 
-  const localTime = new Date(scheduledAt)
-  const utcTime = localTime.toISOString()
+  const utcTime = scheduledAt
 
   const { data, error } = await supabase
     .from('scheduled_posts')
@@ -56,7 +55,7 @@ router.post('/schedule', async (req, res) => {
       image_url: imageUrl || null,
       image_base64: imageBase64 || null,
       image_mimetype: imageMimeType || null,
-      scheduled_at: localTime,
+      scheduled_at: utcTime,
       organization_id: organizationId || null,
     })
     .select()

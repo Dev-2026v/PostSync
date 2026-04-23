@@ -91,7 +91,7 @@ export default function PublishPanel({ regenData, attachedImage, user }) {
           imageMimeType: attachedImage?.source === 'ai' || attachedImage?.source === 'upload' ? (attachedImage?.mimeType ?? null) : null,
           userId: user.id,
           accessToken: user.accessToken,
-          scheduledAt,
+          scheduledAt: new Date(scheduledAt).toISOString(),
           organizationId: selectedOrg !== 'personal' ? selectedOrg : null,
         }),
       });
