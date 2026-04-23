@@ -1,0 +1,91 @@
+import { Router } from "express";
+import { publishPost } from "../services/linkedin.js";
+import { supabase } from '../config/supabase.js'
+
+const router = Router()
+
+router.post('/now', async (req, res) => {
+  const { content, imageUrl, imageBase64, imageMimeType, userId, accessToken, organizationId } = req.body
+
+  console.log("Publish request - userId: ", userId, "| organizationId: ", organizationId)
+
+  if (!userId || !accessToken) {
+    return res.status(401).json({ error: 'Not authenticated. Please connect LinkedIn first.' })
+  }
+  if (!content) return res.status(400).json({ error: 'Content is required' })
+
+  try {
+    const result = await publishPost({
+      accessToken,
+      userId,
+      content,
+      imageUrl: imageUrl || null,
+      imageBase64: imageBase64 || null,
+      imageMimeType: imageMimeType || null,
+      organizationId: organizationId || null,
+    })
+    res.json({ success: true, postId: result.id })
+  } catch (err) {
+    console.error('Publish error: ', err.response?.data || err.message)
+    res.status(500).json({ error: err.response?.data?.message || err.message })
+  }
+})
+
+router.post('/schedule', async (req, res) => {
+  const { content, imageUrl, imageBase64, imageMimeType, scheduledAt, userId, accessToken, organizationId } = req.body
+
+  if (!userId || !accessToken) {
+    return res.status(401).json({ error: 'Not authenticated. Please connect LinkedIn first.' })
+  }
+  if (!content || !scheduledAt) {
+    return res.status(400).json({ error: 'Content and scheduledAt are required' })
+  }
+  if (new Date(scheduledAt) <= new Date()) {
+    return res.status(400).json({ error: 'Scheduled time must be in the future' })
+  }
+
+  const { data, error } = await supabase
+    .from('scheduled_posts')
+    .insert({
+      user_id: userId,
+      access_token: accessToken,
+      content: content,
+      image_url: imageUrl || null,
+      image_base64: imageBase64 || null,
+      image_mimetype: imageMimeType || null,
+      scheduled_at: new Date(scheduledAt).toISOString(),
+      organization_id: organizationId || null,
+    })
+    .select()
+    .single()
+
+  if (error) return res.status(500).json({ error: error.message })
+  res.json({ success: true, jobId: data.id, scheduledAt: data.scheduled_at })
+})
+
+
+router.get('/scheduled', async (req, res) => {
+  const { userId } = req.query
+  if (!userId) return res.status(401).json({ error: 'userId required' })
+
+  const { data, error } = await supabase
+    .from('scheduled_posts')
+    .select('*')
+    .eq('user_id', userId)
+    .order('scheduled_at', { ascending: true })
+
+  if (error) return res.status(500).json({ error: error.message })
+  res.json(data)
+})
+
+router.delete('/scheduled/:id', async (req, res) => {
+  const { error } = await supabase
+    .from('scheduled_posts')
+    .delete()
+    .eq('id', req.params.id)
+
+  if (error) return res.status(500).json({ error: error.message })
+  res.json({ success: true })
+})
+
+export default router
