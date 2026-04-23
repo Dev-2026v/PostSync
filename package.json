@@ -1,5 +1,14 @@
 {
   "dependencies": {
     "cheerio": "^1.2.0"
-  }
+  },
+  
+  "name": "linkedin-reposter",
+  "private": true,
+  "scripts": {
+    "build": "npm run build --prefix frontend && npm run build --prefix backend",
+    "start": "npm start --prefix backend"
+  }  
 }
+
+
