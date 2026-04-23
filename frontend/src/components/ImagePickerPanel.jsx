@@ -56,7 +56,7 @@ export default function ImagePickerPanel({ postContent, onImageChange }) {
     setResults([])
     const source = tab === 1 ? 'unsplash' : 'pexels'
     try {
-      const res = await fetch(`${API_URL}/api/image/search/${source}?query=${encodeURIComponent(query)}&per_page=12`)
+      const res = await fetch(`${API_URL}/api/image/${source}?query=${encodeURIComponent(query)}&per_page=12`)
       const data = await res.json()
       setResults(Array.isArray(data) ? data : [])
     } catch (err) {
