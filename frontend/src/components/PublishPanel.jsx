@@ -3,7 +3,8 @@ import { API_URL } from '../api';
 
 export default function PublishPanel({ regenData, attachedImage, user }) {
   const [scheduledAt, setScheduledAt] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [nowLoading, setNowLoading] = useState(false);
+  const [scheduleLoading, setScheduleLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
   const [orgsLoading, setOrgsLoading] = useState(false);
@@ -44,7 +45,7 @@ export default function PublishPanel({ regenData, attachedImage, user }) {
     console.log('Posting as:', selectedOrg)  // ← add this
     console.log('organizationId:', selectedOrg !== 'personal' ? selectedOrg : null)
 
-    setLoading(true);
+    setNowLoading(true);
     setError(null);
     setResult(null);
 
@@ -69,13 +70,13 @@ export default function PublishPanel({ regenData, attachedImage, user }) {
     } catch (err) {
       setError(err.message);
     } finally {
-      setLoading(false);
+      setNowLoading(false);
     }
   };
 
   const handleSchedule = async () => {
     if (!scheduledAt) return;
-    setLoading(true);
+    setScheduleLoading(true);
     setError(null);
     setResult(null);
     try {
@@ -100,7 +101,7 @@ export default function PublishPanel({ regenData, attachedImage, user }) {
     } catch (err) {
       setError(err.message);
     } finally {
-      setLoading(false);
+      setScheduleLoading(false);
     }
   };
 
@@ -110,10 +111,7 @@ export default function PublishPanel({ regenData, attachedImage, user }) {
       : null;
 
     return (
-      <div className={`p-4 rounded-xl border text-sm ${result.type === 'posted'
-        ? 'bg-green-50 border-green-200 text-green-700'
-        : 'bg-blue-50 border-blue-200 text-blue-700'
-        }`}>
+      <div className={`p-4 rounded-xl border text-sm  font-bold bg-green-50 border-green-200 text-green-700 `}>
         {result.type === 'posted' ? (
           <div>
             <p>Post published successfully!</p>
@@ -135,7 +133,7 @@ export default function PublishPanel({ regenData, attachedImage, user }) {
         )}
         <button
           onClick={() => setResult(null)}
-          className="mt-2 text-xs underline opacity-70 hover:opacity-100"
+          className="mt-2 px-3 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-colors"
         >
           Post another
         </button>
@@ -238,10 +236,10 @@ export default function PublishPanel({ regenData, attachedImage, user }) {
 
       <button
         onClick={handlePostNow}
-        disabled={loading}
-        className="w-full py-2.5 rounded-lg bg-[#0A66C2] hover:bg-[#004182] text-white text-sm font-medium disabled:opacity-50 transition-colors mb-3"
+        disabled={nowLoading}
+        className="w-full py-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium disabled:opacity-50 transition-colors mb-3"
       >
-        {loading ? 'Publishing...' : selectedOrg !== 'personal' ? 'Post now (as company)' : 'Post now'}
+        {nowLoading ? 'Publishing...' : 'Post now'}
       </button>
 
       <div className="flex items-center gap-2 mb-3">
@@ -260,10 +258,10 @@ export default function PublishPanel({ regenData, attachedImage, user }) {
 
       <button
         onClick={handleSchedule}
-        disabled={loading || !scheduledAt}
+        disabled={scheduleLoading || !scheduledAt}
         className="w-full py-2.5 rounded-lg border border-gray-200 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 transition-colors"
       >
-        {loading ? 'Scheduling...' : selectedOrg !== 'personal' ? 'Schedule (as company)' : 'Schedule post'}
+        {scheduleLoading ? 'Scheduling...' : 'Schedule post'}
       </button>
     </div>
   );
