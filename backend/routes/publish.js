@@ -56,7 +56,7 @@ router.post('/schedule', async (req, res) => {
       image_url: imageUrl || null,
       image_base64: imageBase64 || null,
       image_mimetype: imageMimeType || null,
-      scheduled_at: utcTime,
+      scheduled_at: localTime,
       organization_id: organizationId || null,
     })
     .select()
