@@ -25,16 +25,17 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 font-['DM_Sans',sans-serif]">
-      <div className="flex w-full max-w-3xl min-h-125 rounded-2xl overflow-hidden shadow-lg">
+    <div className="md:min-h-screen flex items-center justify-center md:p-6 font-['DM_Sans',sans-serif]">
+
+      <div className="min-h-screen flex flex-col md:flex-row md:w-full md:max-w-3xl md:min-h-125 md:rounded-2xl overflow-hidden shadow-lg">
 
         {/* Left panel */}
-        <div className="flex-1 bg-blue-950 p-12 flex flex-col justify-between">
-          <div className="font-['Syne',sans-serif] text-xl font-bold text-white tracking-tight">
+        <div className="flex-1 bg-blue-950 p-5 md:p-12 flex flex-col justify-between">
+          <div className="font-['Syne',sans-serif] text-4xl font-bold text-white tracking-tight">
             Post<span className="text-blue-500">Sync</span>
           </div>
-          <div className="mt-auto pt-10">
-            <h1 className="font-['Syne',sans-serif] text-3xl font-bold text-white leading-tight tracking-tight">
+          <div className="mt-auto pt-4 md:pt-10">
+            <h1 className="font-['Syne',sans-serif] text-2xl md:text-3xl font-bold text-white leading-tight tracking-tight">
               Schedule &amp; publish to{' '}
               <span className="text-blue-500">LinkedIn</span>{' '}
               — on autopilot.
@@ -46,7 +47,7 @@ export default function LoginPage() {
         </div>
 
         {/* Right panel */}
-        <div className="w-80 bg-blue-900 px-8 py-12 flex flex-col justify-center">
+        <div className="w-full bg-blue-900 px-8 py-12 flex flex-col justify-center">
           <h2 className="font-['Syne',sans-serif] text-xl font-bold text-white mb-1.5">
             {isSignup ? 'Create account' : 'Welcome back'}
           </h2>
